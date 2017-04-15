@@ -61,9 +61,10 @@ class Purchase_model extends CI_Model
         $this->db->select('purchase.id, purchase.no, purchase.dates, purchase.request, purchase.acc, purchase.docno, vendor.prefix, vendor.name, purchase.user, purchase.status,
                            purchase.total, purchase.p2, purchase.notes, purchase.currency, purchase.approved');
 
-        $this->db->from('purchase, vendor, stock_in');
+//        $this->db->from('purchase, vendor, stock_in');
+        $this->db->from('purchase, vendor');
         $this->db->where('purchase.vendor = vendor.id');
-        $this->db->where('purchase.no = stock_in.purchase');
+//        $this->db->where('purchase.no = stock_in.purchase');
         $this->cek_null($currency,"purchase.currency");
         $this->cek_null($vendor,"purchase.vendor");
         $this->db->where('purchase.approved', 1);

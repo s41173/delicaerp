@@ -129,7 +129,7 @@ class Arpayment_model extends CI_Model
 
     function report($customer,$start,$end,$acc,$cur)
     {
-        $this->db->select('ar_payment.id, ar_payment.no, ar_payment.docno, ar_payment.check_no, ar_payment.account, ar_payment.due, ar_payment.dates, customer.prefix, customer.name, ar_payment.user,
+        $this->db->select('ar_payment.id, ar_payment.no, ar_payment.docno, ar_payment.check_no, ar_payment.bank, ar_payment.account, ar_payment.due, ar_payment.dates, customer.prefix, customer.name, ar_payment.user,
                            ar_payment.amount, ar_payment.acc, ar_payment.currency, ar_payment.approved, ar_payment.log');
 
         $this->db->from('ar_payment, customer');

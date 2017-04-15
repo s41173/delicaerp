@@ -223,14 +223,21 @@ class Stock_out extends MX_Controller
             }
             else
             {
+                $this->db->trans_start();
                 $this->update_qty($stockout->no); //  update qty
                 $this->add_warehouse_transaction($stockout->no); // add wt
                 $this->create_po_journal($stockout->dates, $stockout->currency, 'BPBG-00'.$stockout->no, $stockout->no, $stockout->balance); // create journal
              
                 $data = array('approved' => 1);
                 $this->Stock_out_model->update_id($pid, $data);
+                $this->db->trans_complete();
+                
+                if ($this->db->trans_status() === FALSE)
+                {
+                   $this->session->set_flashdata('message', "$this->title BPBG-00$stockout->no error confirmed..!");
+                }
+                else { $this->session->set_flashdata('message', "$this->title BPBG-00$stockout->no confirmed..!"); }
 
-                $this->session->set_flashdata('message', "$this->title BPBG-00$stockout->no confirmed..!");
                 redirect($this->title);
             }
         }
@@ -384,13 +391,8 @@ class Stock_out extends MX_Controller
             if ( $val->approved == 1 ) // cek journal harian sudah di approve atau belum
             {
                 $this->rollback($uid, $po);
-                $this->session->set_flashdata('message', "1 $this->title successfully rollback..!");
             }
-            else
-            {
-               $this->remove($uid, $po);
-               $this->session->set_flashdata('message', "1 $this->title successfully remove..!");
-            }  
+            else{ $this->remove($uid, $po); }  
         }
         else { $this->session->set_flashdata('message', "1 $this->title related to another component..!"); }
         redirect($this->title);
@@ -398,6 +400,7 @@ class Stock_out extends MX_Controller
     
     private function rollback($uid,$po)
     {
+       $this->db->trans_start(); 
        // remove journal
        $this->journalgl->remove_journal('STO', '0'.$po); // journal gl 
         
@@ -407,12 +410,28 @@ class Stock_out extends MX_Controller
        $data = array('approved' => 0);
        $this->Stock_out_model->update_id($uid, $data);
 //                $this->journalgl->remove_journal('STO', $po); // journal gl
+       $this->db->trans_complete();
+       
+       if ($this->db->trans_status() === FALSE)
+       {
+          $this->session->set_flashdata('message', "1 $this->title error rollback..!");
+       }
+       else { $this->session->set_flashdata('message', "1 $this->title successfully rollback..!"); }
+       
     }
     
     private function remove($uid,$po)
     {
+       $this->db->trans_start();  
        $this->Stock_out_item_model->delete_po($po);
        $this->Stock_out_model->delete($uid); 
+       $this->db->trans_complete();
+       
+       if ($this->db->trans_status() === FALSE)
+       {
+          $this->session->set_flashdata('message', "1 $this->title error remove..!");
+       }
+       else { $this->session->set_flashdata('message', "1 $this->title successfully remove..!"); }
     }
 
     private function cek_relation($id=null)

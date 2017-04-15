@@ -419,6 +419,7 @@ class Product extends MX_Controller
     
     function calculate_qty()
     {
+       $this->db->trans_start();
        $wt = new Warehouse_transaction();
        $p = new Period();
        $p->get(); 
@@ -433,6 +434,11 @@ class Product extends MX_Controller
           $value = array('qty' => intval($open + $trans));
 	  $this->Product_model->update($res->id, $value);
        }
+       $this->db->trans_complete();
+       
+       if ($this->db->trans_status() === FALSE)
+       { $this->session->set_flashdata('message', "Calculate Stock Error..!"); }
+       else { $this->session->set_flashdata('message', "Calculate Stock Success..!"); }
        
        redirect($this->title);
     }
@@ -704,6 +710,7 @@ class Product extends MX_Controller
         $start    = $this->input->post('tstart'); 
         $end      = $this->input->post('tend'); 
         $cur      = $this->input->post('ccur');
+        $order    = $this->input->post('corder'); 
 
         $data['category'] = $this->category->get_name($category);
         $data['brand'] = $this->brand->get_name($brand);
@@ -715,7 +722,7 @@ class Product extends MX_Controller
 
 //        Property Details
         $data['company'] = $this->properti['name'];
-        $data['reports'] = $this->Product_model->report($ptype,$category,$brand,$cur,$warehouse)->result();
+        $data['reports'] = $this->Product_model->report($ptype,$category,$brand,$cur,$warehouse,$order)->result();
         $total = $this->Product_model->total($ptype,$category,$brand,$cur);
         $data['total'] = $total['total'];
 
@@ -723,8 +730,7 @@ class Product extends MX_Controller
         elseif ($type == 2){ $this->load->view('product_pivot', $data); }
         elseif ($type == 3){ $this->load->view('product_barcode_report', $data); }
         elseif ($type == 4){ $this->load->view('product_report_label', $data); }
-        else { $this->load->view('stock_card_report', $data); }
-        
+        else { $this->load->view('stock_card_report', $data); }   
     }
     
     private function get_unit_cost($pid)

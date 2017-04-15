@@ -797,8 +797,6 @@ class Ar_payment extends MX_Controller
 //        Property Details
         $data['company'] = $this->properti['name'];
         
-
-        
         if ($this->input->post('ctype') == 0){ $data['reports'] = $this->Arpayment_model->report($customer,$start,$end,$acc,$cur)->result(); $this->load->view('arpayment_report', $data); }
         elseif ($this->input->post('ctype') == 1){ $data['reports'] = $this->Payment_trans_model->report($customer,$start,$end,$acc,$cur)->result(); $this->load->view('arpayment_summary', $data); }
         elseif ($this->input->post('ctype') == 2){ $data['reports'] = $this->Payment_trans_model->report($customer,$start,$end,$acc,$cur)->result(); $this->load->view('arpayment_pivot', $data); }

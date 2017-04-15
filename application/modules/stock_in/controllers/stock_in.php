@@ -172,6 +172,7 @@ class Stock_in extends MX_Controller
         elseif($this->cek_count_item($stockin->no,$po) == FALSE){ $this->session->set_flashdata('message', "Item List Not Match with PO-00".$po."..!"); }
         else
         {
+           $this->db->trans_start(); 
            // add qty
            $result = $this->items_model->get_last_item($stockin->no)->result();
            foreach ($result as $res)
@@ -193,7 +194,13 @@ class Stock_in extends MX_Controller
            //edit approvaal
            $data = array('approved' => 1);
            $this->Stock_in_model->update($pid, $data);
-           $this->session->set_flashdata('message', "$this->title BTB-00$stockin->no confirmed..!");
+           $this->db->trans_complete();
+           
+           if ($this->db->trans_status() === FALSE)
+           {
+             $this->session->set_flashdata('message', "$this->title BTB-00$stockin->no error confirmed..!");
+           }
+           else { $this->session->set_flashdata('message', "$this->title BTB-00$stockin->no confirmed..!"); }
         }
 
         redirect($this->title);
@@ -291,15 +298,9 @@ class Stock_in extends MX_Controller
           { 
              if ($this->cek_stock($val->no) != TRUE)
              { $this->session->set_flashdata('message', "1 $this->title cannot deleted, invalid stock ..!");  }
-             else
-             {
-               $this->rollback($uid, $purchase); $this->session->set_flashdata('message', "1 $this->title successfully rollback..!");   
-             }
+             else{ $this->rollback($uid, $purchase);  }
           }
-          else 
-          {
-              $this->remove($uid, $po); $this->session->set_flashdata('message', "1 $this->title successfully removed..!"); 
-          }
+          else { $this->remove($uid, $po);  }
         }
         else { $this->session->set_flashdata('message', "1 $this->title cannot deleted related to another component ..!"); }
         
@@ -321,6 +322,7 @@ class Stock_in extends MX_Controller
     
     private function rollback($uid,$purchase)
     {
+        $this->db->trans_start();
         $val = $this->Stock_in_model->get_stock_in_by_id($uid)->row();
         $pdate = $this->purchase->get_po($val->purchase); // purchase date
         
@@ -343,12 +345,27 @@ class Stock_in extends MX_Controller
          //edit approvaal
          $data = array('approved' => 0);
          $this->Stock_in_model->update($uid, $data);
+         $this->db->trans_complete();
+         
+         if ($this->db->trans_status() === FALSE)
+         {
+            $this->session->set_flashdata('message', "1 $this->title error rollback..!");   
+         }
+         else { $this->session->set_flashdata('message', "1 $this->title error rollback..!");    }
     }
     
     private function remove($uid,$po)
     {
+       $this->db->trans_start(); 
        $val = $this->Stock_in_model->get_stock_in_by_id($uid)->row(); 
        $this->items_model->delete_po($val->no); $this->Stock_in_model->delete($uid); 
+       $this->db->trans_complete();
+       
+       if ($this->db->trans_status() === FALSE)
+       {
+          $this->session->set_flashdata('message', "1 $this->title error removed..!"); 
+       }
+       else { $this->session->set_flashdata('message', "1 $this->title successfully removed..!");  }
     }
 
     function add()

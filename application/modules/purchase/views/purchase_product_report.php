@@ -109,7 +109,7 @@
                 ]
             });
 			
-			$('#jqxgrid').jqxGrid({ pagesizeoptions: ['10', '20', '30', '40', '50', '100', '200', '300']}); 
+			$('#jqxgrid').jqxGrid({ pagesizeoptions: ['100', '200', '500', '1000', '2000', '3000', '5000']}); 
 			
 			$("#bexport").click(function() {
 				

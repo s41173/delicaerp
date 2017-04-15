@@ -124,7 +124,7 @@
 			});
 			
 			
-			$("#table").hide();
+ 	       $("#table").hide();
 			
 		// end jquery	
         });

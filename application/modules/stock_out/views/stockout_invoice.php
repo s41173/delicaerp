@@ -65,11 +65,11 @@
 </tr>		
 
 	<?php
-                
+           
+        $tot=0;    
         if ($items)
         {
             $i=1;
-			$tot=0;
             foreach ($items as $res)
             {
 				$hasil = $res->qty*$res->price;
@@ -91,7 +91,9 @@
                 
     ?>
     
-    <tr> <td colspan="3"></td> <td> <b> Total : </b> </td> <td class="price" align="right"> <?php echo number_format($tot); ?>,- </td> </tr>
+    <tr> <td colspan="3"></td> <td> <b> Total : </b> </td> <td class="price" align="right"> 
+        <?php echo number_format(intval($tot)); ?>,- 
+    </td> </tr>
 
 		</table>
 	</div>  <div class="clear"></div>

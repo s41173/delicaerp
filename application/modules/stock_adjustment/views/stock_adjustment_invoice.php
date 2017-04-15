@@ -101,6 +101,15 @@
 				  
                 ]
             });
+            
+            $("#bexport").click(function() {
+				
+				var type = $("#crtype").val();	
+				if (type == 0){ $("#jqxgrid").jqxGrid('exportdata', 'html', 'Stock-Adj'); }
+				else if (type == 1){ $("#jqxgrid").jqxGrid('exportdata', 'xls', 'Stock-Adj'); }
+				else if (type == 2){ $("#jqxgrid").jqxGrid('exportdata', 'pdf', 'Stock-Adj'); }
+				else if (type == 3){ $("#jqxgrid").jqxGrid('exportdata', 'csv', 'Stock-Adj'); }
+			});
 			
 			$('#jqxgrid').jqxGrid({ pagesizeoptions: ['50', '150', '300']}); 
 			
@@ -139,7 +148,18 @@
 	<div id="tablebox">
     
     <div id='jqxWidget'>
-    <div style='margin-top: 10px;' id="jqxgrid"> </div> 
+        <div style='margin-top: 10px;' id="jqxgrid"> </div>
+
+        <table style="float:right; margin:5px;">
+        <tr>
+        <td> <input type="button" id="bexport" value="Export"> - </td>
+        <td> 
+        <select id="crtype"> <option value="0"> HTML </option> <option value="1"> XLS </option>  <option value="2"> PDF </option> 
+        <option value="3"> CSV </option> 
+        </select>
+        </td>
+        </tr>
+        </table>
     </div>
 	
 		<table id="table">

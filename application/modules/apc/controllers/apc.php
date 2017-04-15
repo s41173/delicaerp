@@ -77,7 +77,6 @@ class Apc extends MX_Controller
             $data['pagination'] = $this->pagination->create_links(); //array menampilkan link untuk pagination.
             // akhir dari config untuk pagination
             
-
             // library HTML table untuk membuat template table class zebra
             $tmpl = array('table_open' => '<table cellpadding="2" cellspacing="1" class="tablemaster">');
 
@@ -117,7 +116,8 @@ class Apc extends MX_Controller
 
     public function chart($cur='IDR')
     {
-        $fusion = new Fusioncharts();
+//        $fusion = new Fusioncharts();
+        $fusion = $this->load->library('fusioncharts');
         $chart  = base_url().'public/flash/Column3D.swf';
         
         $ps = new Period();
@@ -826,8 +826,8 @@ class Apc extends MX_Controller
 //        Property Details
         $data['company'] = $this->properti['name'];
 
-        if ($type == 0){ $data['aps'] = $this->Apc_model->report($vendor,$cur,$start,$end,$category,$acc)->result(); $page = 'apc_report'; }
-        elseif ($type == 1){ $data['aps'] = $this->Apc_model->report($vendor,$cur,$start,$end,$category,$acc)->result(); $page = 'apc_report_details'; }
+        if ($type == 0){ $data['aps'] = $this->Apc_model->report($cur,$start,$end,$category,$acc)->result(); $page = 'apc_report'; }
+        elseif ($type == 1){ $data['aps'] = $this->Apc_model->report($cur,$start,$end,$category,$acc)->result(); $page = 'apc_report_details'; }
         elseif ($type == 2) { $data['aps'] = $this->Apc_model->report_category($vendor,$cur,$start,$end,$category,$acc)->result(); $page = 'apc_report_category'; }
         elseif ($type == 3) { $data['aps'] = $this->Apc_model->report_category($vendor,$cur,$start,$end,$category,$acc)->result(); $page = 'apc_pivot'; }
         

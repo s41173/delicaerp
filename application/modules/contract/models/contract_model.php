@@ -163,7 +163,7 @@ class Contract_model extends CI_Model
     private function cek_between_date($start,$end)
     {
         if ($start == null || $end == null ){return null;}
-        else { return $this->db->where("contract.dates BETWEEN '".$start."' AND '".$end."'"); }
+        else { return $this->db->where("contract.deal_dates BETWEEN '".$start."' AND '".$end."'"); }
     }
     
     private function cek_between_due($start,$end)

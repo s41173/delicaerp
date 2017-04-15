@@ -98,7 +98,7 @@ class Product_model extends CI_Model
         if($query > 0) {  return FALSE; } else { return TRUE; }
     }
 
-    function report($type=null, $category=null,$brand=null,$cur='IDR',$warehouse=null)
+    function report($type=null, $category=null,$brand=null,$cur='IDR',$warehouse=null,$order='id')
     {
         $this->db->select('product.id, brand.name as brand, product.type, product.warehouse_id, category.name as category, product.currency, product.model, product.name, product.desc, product.qty, product.buying, product.hpp, product.price, product.amount, product.unit');
         $this->db->from('category, product, brand');
@@ -109,7 +109,7 @@ class Product_model extends CI_Model
         $this->cek_null($brand,"product.brand");
         $this->cek_null($category,"product.category");
         $this->cek_null($warehouse,"product.warehouse_id");
-        $this->db->order_by('product.id', 'asc');
+        $this->db->order_by('product.'.$order, 'asc');
         return $this->db->get();
     }
 

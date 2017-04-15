@@ -19,7 +19,8 @@
 			value="<?php echo set_value('tname', isset($default['name']) ? $default['name'] : ''); ?>" /> &nbsp; <br />  </td>  </tr>
 					
 			<tr>
-			<td> <label for="tno"> Acc No </label></td> <td>:</td> <td><input type="text" class="required" name="tno" size="15" title="Acc No" 
+			<td> <label for="tno"> Acc No </label></td> <td>:</td> 
+            <td><input type="text" class="required" name="tno" size="15" title="Acc No" 
 			value="<?php echo set_value('tno', isset($default['no']) ? $default['no'] : ''); ?>" /> &nbsp; <br />  </td>  </tr>
 					
 			<tr>

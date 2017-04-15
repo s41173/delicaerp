@@ -194,11 +194,15 @@ class Stock_adjustment extends MX_Controller
         }
         else
         {
+            // start transaction 
+            
+            $this->db->trans_start();
+            
+             //  update qty
+           $this->update_qty($stock_adjustment->no);
+           
             $data = array('approved' => 1);
             $this->Stock_adjustment_model->update_id($pid, $data);
-
-            //  update qty
-           $this->update_qty($stock_adjustment->no);
            
            // create journal
            $balancein = $this->Stock_adjustment_item_model->total_criteria($stock_adjustment->no,'in');
@@ -207,8 +211,12 @@ class Stock_adjustment extends MX_Controller
 
            // add wt
            $this->add_warehouse_transaction($stock_adjustment->no);
+           $this->db->trans_complete();
+           
+           if ($this->db->trans_status() === FALSE)
+           {  $this->session->set_flashdata('message', "IAJ-00$stock_adjustment->no failed confirmed..!"); }
+           else { $this->session->set_flashdata('message', "IAJ-00$stock_adjustment->no confirmed..!"); }
 
-           $this->session->set_flashdata('message', "IAJ-00$stock_adjustment->no confirmed..!");
            redirect($this->title);
         }
 
@@ -321,21 +329,30 @@ class Stock_adjustment extends MX_Controller
         if ( $val->approved == 1 ){ $this->rollback($uid, $po); }
         else{ $this->remove($uid, $po);}
 
-        $this->session->set_flashdata('message', "1 $this->title successfully removed..!");
         redirect($this->title);
     }
     
     private function rollback($uid,$po)
     {
+       $this->db->trans_start(); 
        $this->journalgl->remove_journal('IJ', '00'.$po); // journal gl  
        $this->rollback_qty($po);
        $this->del_warehouse_transaction($po); 
        $data = array('approved' => 0);
        $this->Stock_adjustment_model->update_id($uid, $data);
+       $this->db->trans_complete();
+       
+       if ($this->db->trans_status() === FALSE)
+       {
+         $this->session->set_flashdata('message', "1 $this->title canceled rollback..!");
+       }
+       else { $this->session->set_flashdata('message', "1 $this->title successfully rollback..!"); }
+       
     }
     
     private function remove($uid,$po)
     {
+       $this->db->trans_start(); 
        $stockadj = $this->Stock_adjustment_model->get_stock_adjustment_by_no($po)->row(); 
        $stockitem = $this->Stock_adjustment_item_model->get_last_item($po)->result();
        
@@ -350,6 +367,13 @@ class Stock_adjustment extends MX_Controller
 
        $this->Stock_adjustment_item_model->delete_po($po);
        $this->Stock_adjustment_model->delete($uid); 
+       $this->db->trans_complete();
+       
+       if ($this->db->trans_status() === FALSE)
+       {
+         $this->session->set_flashdata('message', "1 $this->title canceled removed..!");
+       }
+       else { $this->session->set_flashdata('message', "1 $this->title successfully removed..!"); }
     }
 
     private function cek_relation($id=null)
@@ -474,6 +498,10 @@ class Stock_adjustment extends MX_Controller
 //            if ($this->input->post('tqty') < 0){ $type = 'out'; $qty = abs($this->input->post('tqty')); }
 //            else{ $type = 'in'; $qty = $this->input->post('tqty'); }
             
+            // start transaction 
+            
+            $this->db->trans_start();
+            
             if ($type == 'out')
             {
                $cm = new Control_model();
@@ -495,7 +523,9 @@ class Stock_adjustment extends MX_Controller
                            'qty' => $qty, 'type' => $type, 'price' => $price, 'account' => $account);
 
             $this->Stock_adjustment_item_model->add($pitem);
-            echo 'true';
+            $this->db->trans_complete();
+           
+            if ($this->db->trans_status() == FALSE){  echo 'Failure Transaction...!!'; } else { echo 'true'; }
         }
         else{ echo validation_errors(); }
     }

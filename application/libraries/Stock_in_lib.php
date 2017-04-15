@@ -25,7 +25,7 @@ class Stock_in_lib {
         $this->ci->db->select('dates, no');
         $this->ci->db->where('purchase', $no);
         $query = $this->ci->db->get($this->table)->row();
-        return $query;
+        if ($query){ return $query; }else{ return null; }
     }
 
     function cek_settled($no=null)

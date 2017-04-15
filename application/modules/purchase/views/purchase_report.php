@@ -234,7 +234,9 @@
 			  {
 				  $sin = new Stock_in_lib();
 				  if ($stts == 0){ return '-'; }
-				  else { $res = $sin->get_stockin_based_purchase($no); return 'BTB-00'.$res->no.' : '.tglin($res->dates); }
+				  else { $res = $sin->get_stockin_based_purchase($no); 
+                         if ($res){ return 'BTB-00'.$res->no.' : '.tglin($res->dates);  }else{ return '-'; }
+                       }
 			  }
 		  
 		  

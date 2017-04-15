@@ -377,7 +377,7 @@ class Products_lib {
            $this->ci->db->select('id, name, qty');
            $this->ci->db->where('id', $id);
            $res = $this->ci->db->get('product')->row();
-           return $res->name;
+           if ($res){ return $res->name; }else { return ''; }
         }
     }
     

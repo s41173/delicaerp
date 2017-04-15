@@ -99,6 +99,16 @@ $atts1 = array(
             &nbsp; <br />
 			</td> 						
 			</tr>	
+                
+            <tr>	
+			<td> <label for="corder"> Order By </label> </td> <td>:</td>
+			<td> <select name="corder">
+                 <option value="id"> ID </option>
+                 <option value="name"> Name </option>
+                 <option value="model"> Model </option>
+                 </select> &nbsp;
+            </td>
+			</tr>	    
             
             <tr>	
 			<td> <label for="cbrand"> Report Type </label> </td> <td>:</td>
