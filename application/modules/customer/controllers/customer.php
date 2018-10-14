@@ -72,7 +72,7 @@ class Customer extends MX_Controller
 
         if ($num_rows > 0)
         {
-	    $config['base_url'] = site_url($this->title.'/get_last_customer');
+	        $config['base_url'] = site_url($this->title.'/get_last_customer');
             $config['total_rows'] = $num_rows;
             $config['per_page'] = $this->modul['limit'];
             $config['uri_segment'] = $uri_segment;

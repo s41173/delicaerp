@@ -205,6 +205,8 @@ class Stock_out extends MX_Controller
 
     function confirmation($pid)
     {
+        $this->acl->otentikasi3($this->title);
+        
         $stockout = $this->Stock_out_model->get_stockout_by_id($pid)->row();
 
         if ($stockout->approved == 1)

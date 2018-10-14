@@ -183,6 +183,7 @@ class Demand extends MX_Controller
 
     function confirmation($pid)
     {
+        $this->acl->otentikasi3($this->title);
         $demand = $this->Demand_model->get_demand_by_id($pid)->row();
 
         if ($demand->approved == 1)
@@ -198,7 +199,6 @@ class Demand extends MX_Controller
            $this->session->set_flashdata('message', "$this->title FPB-00$demand->no confirmed..!");
            redirect($this->title);
         }
-
     }
 
 

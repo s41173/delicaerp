@@ -161,6 +161,7 @@ class Stock_in extends MX_Controller
 
     function confirmation($pid,$po)
     {
+        $this->acl->otentikasi3($this->title);
         $stockin = $this->Stock_in_model->get_stock_in_by_id($pid)->row();
         $purchase = $this->purchase->get_po($po);
 
